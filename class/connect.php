@@ -3,6 +3,7 @@
 class db{
 
 	public $error_msg = null;
+	public $con = null;
 
 	public function __construct(){
 		$this->con_db();
@@ -17,8 +18,7 @@ class db{
 		$dsn = "mysql:host={$servername}; dbname={$databse}";
 
 		try {
-			$con = new PDO($dsn,$username,$password);
-			return $con;
+			$this->con = new PDO($dsn,$username,$password);
 		} catch (Exception $e) {
 			die('Connection error, because: ' . $e->getMessage());
 		}
@@ -28,7 +28,7 @@ class db{
 
 	public function select_all_data(){
 		$str = "SELECT * FROM employee";
-		$statement = $this->con_db()->prepare($str);
+		$statement = $this->con->prepare($str);
 		$statement->execute();
 		$rows = [];
 		while ($row = $statement->fetch()) {
@@ -68,7 +68,7 @@ class db{
 
 		$sql_query = "INSERT INTO employee ($column) VALUES (:{$values}) ";
 
-		$statement = $this->con_db()->prepare($sql_query);
+		$statement = $this->con->prepare($sql_query);
 
 		// prepared 2 or 3 paramater
 		// prepared , prepared values
@@ -90,7 +90,7 @@ class db{
 
 	public function select_employee($id){
 		$sql = "SELECT * FROM employee WHERE id = :id ";
-		$statement = $this->con_db()->prepare($sql);
+		$statement = $this->con->prepare($sql);
 		$statement->bindValue(':id',$id);
 
 		$statement->execute();
@@ -105,22 +105,29 @@ class db{
 	public function update_data($id){
 		if (isset($_POST['update'])) {
 
+
+
 			$name = $_POST['name'];
 			$age = $_POST['age'];
 			$designated = $_POST['designated'];
 
 			$data_post = ['name' => $name , 'age' => $age , 'department' => $designated];
 
-			$update_sql = "UPDATE employee SET name = :name , age = :age , department = :department 
-						  WHERE id = :id  ";
 
-			$statement = $this->con_db()->prepare($update_sql);
+			$update_column = '';
+			foreach ($data_post as $key => $value) {
+				$update_column .=  $key . '= :' . $key . ', ';
+			}
+			$column_placeholder =  rtrim($update_column,' ,');
+
+			$str = "UPDATE employee SET {$column_placeholder} WHERE id = :id ";
+			$statement = $this->con->prepare($str);
 
 			foreach ($data_post as $data => $value) {
 				$statement->bindValue(':'.$data,$value);
 			}
 
-			$statement->bindValue(':id' ,$id);
+			$statement->bindValue(':id',$id);
 
 			$result = $statement->execute();
 
@@ -133,7 +140,7 @@ class db{
 
 	public function delete_data($id){
 		$sql_query = "DELETE FROM employee WHERE id = :id ";
-		$statement = $this->con_db()->prepare($sql_query);
+		$statement = $this->con->prepare($sql_query);
 		$statement->bindValue(':id',$id);
 
 		$result = $statement->execute();
@@ -150,7 +157,7 @@ class db{
 
 	public function search_result($search_value){
 		$sql_search = "SELECT * FROM `employee` WHERE name LIKE :search_value";
-		$statement = $this->con_db()->prepare($sql_search);
+		$statement = $this->con->prepare($sql_search);
 		$search_data = "%".$search_value."%";
 		$statement->bindValue(':search_value',$search_data);
 

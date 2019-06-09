@@ -7,7 +7,7 @@ class Pagination extends db{
 
 
 	public function dataview($query){
-		$stmt = $this->con_db()->prepare($query);
+		$stmt = $this->con->prepare($query);
 		$stmt->execute();
 
 		if($stmt->rowCount()>0){
@@ -51,7 +51,7 @@ class Pagination extends db{
 	  
 	  $self = $_SERVER['PHP_SELF'];
 	  
-	  $stmt = $this->con_db()->prepare($query);
+	  $stmt = $this->con->prepare($query);
 	  $stmt->execute();
 	  
 	  $total_no_of_records = $stmt->rowCount();
