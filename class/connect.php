@@ -2,7 +2,7 @@
 
 class db{
 
-	public $error_msg;
+	public $error_msg = null;
 
 	public function __construct(){
 		$this->con_db();
@@ -18,21 +18,10 @@ class db{
 
 		try {
 			$con = new PDO($dsn,$username,$password);
-			$con->setAttribute(PDO::ATTR_ERRMODE , PDO::ERRMODE_EXCEPTION);
 			return $con;
 		} catch (Exception $e) {
-			echo $e->getMessage();
+			die('Connection error, because: ' . $e->getMessage());
 		}
-	}
-
-	public function count_data(){
-
-		$str = "SELECT * FROM employee";
-		$statement = $this->con_db()->prepare($str);
-		$statement->execute();
-	
-		$rows = $statement->fetch();
-		echo count($rows);
 	}
 
 

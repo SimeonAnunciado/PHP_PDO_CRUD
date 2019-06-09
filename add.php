@@ -32,13 +32,13 @@ $con = new db();
 
 						<form action="" method="post">
 							<div class="form-group">
-								<input type="text" class="form-control" name="name" placeholder="name">
+								<input type="text" class="form-control" name="name" placeholder="name" required>
 							</div>
 							<div class="form-group">
-								<input type="number" class="form-control" name="age" placeholder="age">
+								<input type="number" class="form-control" name="age" placeholder="age" required>
 							</div>
 							<div class="form-group">
-								<input type="text" class="form-control" name="designated" placeholder="designated">
+								<input type="text" class="form-control" name="designated" placeholder="designated" required>
 							</div>
 							<button name="submit" class="btn btn-block btn-primary">SUBMIT</button>
 						</form>
